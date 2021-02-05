@@ -1,0 +1,36 @@
+<div class="{{globals.darkClass}}">
+  <h1>Tic Tac Toe</h1>
+  <form [formGroup]="createRoom" (ngSubmit)="onSubmit()">
+    <div class="row">
+      <div class="form-group col-3">
+        <label for="name">Room name</label>&nbsp;
+        <input id="name" type="text" formControlName="name" class="form-control">
+      </div>
+      <div class="form-group col-3">
+        <button class="btn btn-primary" type="submit" style="margin-top: 32px">Send</button>
+      </div>
+    </div>
+  </form>
+
+  Room: {{ ticTacToeService.room }}<br/>
+  {{ ticTacToeService.playerText }}<br/>
+  {{ ticTacToeService.text }} <button type="button" class="btn btn-primary {{ ticTacToeService.hideNewGame }}" (click)="ticTacToeService.newGame()">New Game</button>
+  <table id="ticTacToeBoard">
+    <tr>
+      <td (click)="ticTacToeService.sendMove('00')">{{ ticTacToeService.board["00"] }}</td>
+      <td (click)="ticTacToeService.sendMove('01')">{{ ticTacToeService.board["01"] }}</td>
+      <td (click)="ticTacToeService.sendMove('02')">{{ ticTacToeService.board["02"] }}</td>
+    </tr>
+    <tr>
+      <td (click)="ticTacToeService.sendMove('10')">{{ ticTacToeService.board["10"] }}</td>
+      <td (click)="ticTacToeService.sendMove('11')">{{ ticTacToeService.board["11"] }}</td>
+      <td (click)="ticTacToeService.sendMove('12')">{{ ticTacToeService.board["12"] }}</td>
+    </tr>
+    <tr>
+      <td (click)="ticTacToeService.sendMove('20')">{{ ticTacToeService.board["20"] }}</td>
+      <td (click)="ticTacToeService.sendMove('21')">{{ ticTacToeService.board["21"] }}</td>
+      <td (click)="ticTacToeService.sendMove('22')">{{ ticTacToeService.board["22"] }}</td>
+    </tr>
+  </table>
+  <div id="serverOnOff" class="{{ ticTacToeService.serverOnOff }}">Server {{ ticTacToeService.serverOnOff }}</div>
+</div>

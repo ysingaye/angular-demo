@@ -1,0 +1,22 @@
+#ticTacToeBoard td {
+  width: 80px;
+  height: 80px;
+  border: solid 1px var(--text-color);
+  line-height: 77px;
+  font-size: 60px;
+  text-align: center;
+  cursor: default;
+  user-select: none;
+}
+.dark #ticTacToeBoard td {
+  border-color: var(--text-color-dark);
+}
+#ticTacToeBoard td:empty {
+  cursor: pointer;
+}
+#ticTacToeBoard td:empty:hover {
+  background-color: rgba(100, 100, 255, 0.2);
+}
+.dark #ticTacToeBoard td:empty:hover {
+  background-color: rgba(100, 100, 255, 0.1);
+}

@@ -1,0 +1,133 @@
+/******************************************************************/
+/***************************** HEADER *****************************/
+/******************************************************************/
+#leftMenu {
+  background-color: var(--background-color-header);
+  color: var(--text-color-header);
+  position: fixed;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  padding: 15px;
+  width: 350px;
+}
+#mainContainer.dark #leftMenu {
+  background-color: var(--background-color-header-dark);
+  color: var(--text-color-header-dark);
+}
+
+#leftMenu #site-title {
+  font-size: 33px;
+  line-height: 54px;
+  color: var(--text-color-header);
+}
+#leftMenu #site-logo {
+  height: 54px;
+}
+
+#leftMenu a {
+  color: var(--text-color-header);
+  text-decoration: none;
+}
+#mainContainer.dark #leftMenu a {
+  color: var(--text-color-header-dark);
+}
+
+
+/******************************************************************/
+/***************************** FOOTER *****************************/
+/******************************************************************/
+#footer {
+  background-color: var(--background-color-header);
+  color: var(--text-color-header);
+  text-align: center;
+  padding: 15px 0;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+}
+#mainContainer.dark #footer {
+  background-color: var(--background-color-header-dark);
+  color: var(--text-color-header-dark);
+}
+
+
+
+/*****************************************************************/
+/**************************** SECTION ****************************/
+/*****************************************************************/
+#content {
+  min-height: 100vh;
+  position: relative;
+  padding: 15px 15px 55px;
+  margin-left: 350px;
+}
+
+
+
+/******************************************************************/
+/****************************** MENU ******************************/
+/******************************************************************/
+#leftMenu .menu {
+  margin-top: 15px;
+}
+
+#leftMenu .menuToggle {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+
+
+/******************************************************************/
+/***************************** MEDIAS *****************************/
+/******************************************************************/
+@media (max-width: 991px) {
+  #mainContainer #leftMenu {
+    position: relative;
+    height: auto;
+    padding: 15px;
+    padding-right: 50px;
+    width: 100%;
+  }
+
+  #mainContainer #leftMenu .menu {
+    display: none;
+    position: absolute;
+    height: 100vh;
+    top: -15px;
+    left: 0;
+    padding: 20px;
+    background-color: var(--background-color-header);
+    z-index: 99;
+  }
+  #mainContainer.dark #leftMenu .menu {
+    background-color: var(--background-color-header-dark);
+  }
+
+  #mainContainer #leftMenu .menu.visible {
+    display: block;
+  }
+
+  #content {
+    min-height: calc(100vh - 92px);
+    margin: 0;
+  }
+
+  #footer .darkModeToggle {
+    position: absolute;
+    right: 20px;
+    bottom: 15px;
+  }
+}
+
+@media (max-width: 575px) {
+  #footer {
+    text-align: left;
+    padding-left: 20px;
+  }
+}

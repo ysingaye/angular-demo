@@ -1,0 +1,14 @@
+.game-icon {
+  display: block;
+  max-width: 150px;
+  margin: auto;
+  text-align: center;
+  text-decoration: none !important;
+}
+.game-icon .game-title{
+  color: var(--text-color);
+  font-size: 22px;
+}
+.dark .game-icon .game-title {
+  color: var(--text-color-dark);
+}

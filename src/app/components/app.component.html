@@ -1,0 +1,17 @@
+<div id="mainContainer" class="{{ globals.darkClass }}">
+  <div id="leftMenu">
+    <a routerLink="/"><h1 id="site-title">{{ title }}</h1></a>
+    <app-menu id="leftMenuMenu" class="menu {{menuVisibleClass}}"></app-menu>
+    <div (click)="toggleMenu()" class="d-lg-none menuToggle"><fa-icon [icon]="faBars"></fa-icon></div>
+    <div (click)="toggleDarkMode()" class="darkModeToggle d-none d-lg-block">Dark Mode <fa-icon class="darkModeToggleOn" [icon]="faToggleOn"></fa-icon><fa-icon class="darkModeToggleOff" [icon]="faToggleOff"></fa-icon></div>
+  </div>
+  <div id="content">
+
+    <router-outlet></router-outlet>
+
+    <div id="footer">
+      Website By ysingaye
+      <div (click)="toggleDarkMode()" class="darkModeToggle d-lg-none">Dark Mode <fa-icon class="darkModeToggleOn" [icon]="faToggleOn"></fa-icon><fa-icon class="darkModeToggleOff" [icon]="faToggleOff"></fa-icon></div>
+    </div>
+  </div>
+</div>
