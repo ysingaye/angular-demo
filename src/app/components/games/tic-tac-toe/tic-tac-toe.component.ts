@@ -27,6 +27,18 @@ export class TicTacToeComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  getBoard(line = null): {} {
+    const board = this.ticTacToeService.board;
+    if (line === null) {
+      return board;
+    }
+    const boardLine = {};
+    boardLine[line + '0'] = board[line + '0'];
+    boardLine[line + '1'] = board[line + '1'];
+    boardLine[line + '2'] = board[line + '2'];
+    return boardLine;
+  }
+
   onSubmit(): void {
     if (!this.createRoom.value) {
       alert('You must enter a room name');

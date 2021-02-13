@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "angular-demo-2b366"
+  },
+  "targets": {
+    "angular-demo-2b366": {
+      "hosting": {
+        "angular-demo": [
+          "angular-demo-2b366"
+        ]
+      }
+    }
   }
 }

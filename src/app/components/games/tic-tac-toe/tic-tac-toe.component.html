@@ -11,25 +11,18 @@
       </div>
     </div>
   </form>
-
   Room: {{ ticTacToeService.room }}<br/>
   {{ ticTacToeService.playerText }}<br/>
   {{ ticTacToeService.text }} <button type="button" class="btn btn-primary {{ ticTacToeService.hideNewGame }}" (click)="ticTacToeService.newGame()">New Game</button>
   <table id="ticTacToeBoard">
     <tr>
-      <td (click)="ticTacToeService.sendMove('00')">{{ ticTacToeService.board["00"] }}</td>
-      <td (click)="ticTacToeService.sendMove('01')">{{ ticTacToeService.board["01"] }}</td>
-      <td (click)="ticTacToeService.sendMove('02')">{{ ticTacToeService.board["02"] }}</td>
+      <td *ngFor="let cell of getBoard(0) | keyvalue" (click)="ticTacToeService.sendMove(cell.key)">{{ cell.value }}</td>
     </tr>
     <tr>
-      <td (click)="ticTacToeService.sendMove('10')">{{ ticTacToeService.board["10"] }}</td>
-      <td (click)="ticTacToeService.sendMove('11')">{{ ticTacToeService.board["11"] }}</td>
-      <td (click)="ticTacToeService.sendMove('12')">{{ ticTacToeService.board["12"] }}</td>
+      <td *ngFor="let cell of getBoard(1) | keyvalue" (click)="ticTacToeService.sendMove(cell.key)">{{ cell.value }}</td>
     </tr>
     <tr>
-      <td (click)="ticTacToeService.sendMove('20')">{{ ticTacToeService.board["20"] }}</td>
-      <td (click)="ticTacToeService.sendMove('21')">{{ ticTacToeService.board["21"] }}</td>
-      <td (click)="ticTacToeService.sendMove('22')">{{ ticTacToeService.board["22"] }}</td>
+      <td *ngFor="let cell of getBoard(2) | keyvalue" (click)="ticTacToeService.sendMove(cell.key)">{{ cell.value }}</td>
     </tr>
   </table>
   <div id="serverOnOff" class="{{ ticTacToeService.serverOnOff }}">Server {{ ticTacToeService.serverOnOff }}</div>

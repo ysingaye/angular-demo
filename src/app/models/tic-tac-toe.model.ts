@@ -7,7 +7,7 @@ export class TicTacToeGame {
 
   constructor(room: string) {
     this._room = room;
-    this.setDefaultBoard();
+    this._board = TicTacToeGame.getDefaultBoard();
     this._winner = null;
   }
 
@@ -43,8 +43,8 @@ export class TicTacToeGame {
     this._board = value;
   }
 
-  setDefaultBoard(): void {
-    this._board = {
+  public static getDefaultBoard(): {} {
+    return {
       '00': '',
       '01': '',
       '02': '',
@@ -132,7 +132,7 @@ export class TicTacToeGame {
 
   resetGame(): void {
     this._playerTurn = 'X';
-    this.setDefaultBoard();
+    this._board = TicTacToeGame.getDefaultBoard();
     this._winner = null;
   }
 }

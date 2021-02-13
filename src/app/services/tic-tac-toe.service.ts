@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import firebase from 'firebase';
-import Reference = firebase.database.Reference;
 import {Globals} from '../globals';
 import {TicTacToeGame} from '../models/tic-tac-toe.model';
+import {AngularFireDatabase, AngularFireObject} from '@angular/fire/database';
 
 @Injectable({
   providedIn: 'root'
@@ -16,9 +15,9 @@ export class TicTacToeService {
   private _board = {};
   private _game: TicTacToeGame;
   private _text = '';
-  private _ticTacToeRef: Reference;
-  private _roomRef: Reference = null;
-
+  private _ticTacToeRef: AngularFireObject<any>;
+  private _roomRef: AngularFireObject<any> = null;
+  private _gameRef: AngularFireObject<any> = null;
 
   get room(): string {
     return this._room;
@@ -30,24 +29,23 @@ export class TicTacToeService {
     return this._text;
   }
 
-  constructor() {
-    const db = firebase.database();
-    this._ticTacToeRef = db.ref('tic-tac-toe');
-
-    this._ticTacToeRef.once('value').then((snapshot) => {
-      const rooms = snapshot.val();
+  constructor(private db: AngularFireDatabase) {
+    this._board = TicTacToeGame.getDefaultBoard();
+    this._ticTacToeRef = this.db.object('tic-tac-toe');
+    const sub = this._ticTacToeRef.valueChanges().subscribe(rooms => {
       if (rooms) {
         for (const [room, values] of Object.entries(rooms)) {
           // @ts-ignore
           const players = values.players;
           if (players[Globals.uid] === Globals.uid) {
             this._room = room;
-            this._roomRef = this._ticTacToeRef.child(room);
-            this.addGameListener();
+            this._roomRef = this.db.object('tic-tac-toe/' + room);
+            this.addGameListener().then(() => { });
             break;
           }
         }
       }
+      sub.unsubscribe();
     }, (error) => {
       if (error) {
         this.serverOnOff = 'off';
@@ -55,7 +53,7 @@ export class TicTacToeService {
     });
   }
 
-  sendMove(position): void {
+  async sendMove(position): Promise<void> {
     if (this._game) {
       const index = ((this._game.playerTurn === 'X') ? 0 : 1);
       if (!this._game.winner && this._game.players[index] === Globals.uid && this._game.board[position] === '') {
@@ -63,14 +61,12 @@ export class TicTacToeService {
 
         if (this._game.testVictory(position)) {
           this._game.winner = 'Player ' + this._game.playerTurn + ' win';
-        }
-        else if (this._game.testNul()) {
+        } else if (this._game.testNul()) {
           this._game.winner = 'DRAW';
-        }
-        else {
+        } else {
           this._game.playerTurn = ((this._game.playerTurn === 'X') ? 'O' : 'X');
         }
-        this._roomRef.child('game').set(this._game);
+        await this._gameRef.set(this._game);
       }
     }
   }
@@ -81,58 +77,60 @@ export class TicTacToeService {
     }
     if (roomName !== this._room) {
       if (this._roomRef) {
-        this._roomRef.child('game').off();
-        this._roomRef.child('players/' + Globals.uid).remove();
-        this._roomRef.child('game').set(null);
+        await this.db.object('tic-tac-toe/' + this._room + '/players/' + Globals.uid).remove();
+        await this._gameRef.set(null);
       }
       this._room = roomName;
       this._roomRef = null;
       this._game = null;
       if (roomName) {
-        this._roomRef = this._ticTacToeRef.child(roomName);
+        this._roomRef = this.db.object('tic-tac-toe/' + roomName);
 
-        let players = [];
-        await this._roomRef.child('players').once('value').then((snapshot) => {
-          if (snapshot.val()) {
-            players = Object.keys(snapshot.val());
+        const sub = await this.db.object('tic-tac-toe/' + this._room + '/players').valueChanges().subscribe(async (objPlayers) => {
+          let players = [];
+
+          if (objPlayers) {
+            players = Object.keys(objPlayers);
+          }
+
+          if (!players.includes(Globals.uid)) {
+            let nbrPlayer = players.length;
+            if (nbrPlayer < 2) {
+              const datas = {};
+              datas[Globals.uid] = Globals.uid;
+              await this.db.object('tic-tac-toe/' + this._room + '/players').update(datas);
+              players.push(Globals.uid);
+              nbrPlayer++;
+              if (nbrPlayer === 1) {
+                this.playerText = 'You are player X';
+                this._text = 'Wait for players';
+              } else {
+                this.playerText = 'You are player O';
+                const game = new TicTacToeGame(roomName);
+                game.players = players;
+                game.playerTurn = 'X';
+                this._gameRef = this.db.object('tic-tac-toe/' + this.room + '/game');
+                await this._gameRef.set(game);
+              }
+              await this.addGameListener();
+            } else {
+              this.playerText = '';
+              this._text = 'Room full';
+            }
+            sub.unsubscribe();
           }
         });
-        let nbrPlayer = players.length;
-
-        if (nbrPlayer < 2) {
-          const datas = {};
-          datas[Globals.uid] = Globals.uid;
-          this._roomRef.child('players').update(datas);
-          players.push(Globals.uid);
-          nbrPlayer++;
-          if (nbrPlayer === 1){
-            this.playerText = 'You are player X';
-            this._text = 'Wait for players';
-          }
-          else {
-            this.playerText = 'You are player O';
-            const game = new TicTacToeGame(roomName);
-            game.players = players;
-            game.playerTurn = 'X';
-            this._roomRef.child('game').set(game);
-          }
-          this.addGameListener();
-        }
-        else {
-          this.playerText = '';
-          this._text = 'Room full';
-        }
       }
     }
   }
 
-  private addGameListener(): void {
+  private async addGameListener(): Promise<void> {
     if (this._roomRef) {
-      this._roomRef.child('game').on('value', (snapshot) => {
-        console.log('GAME CHANGE');
-        if (snapshot.val()) {
+      this._gameRef = this.db.object('tic-tac-toe/' + this.room + '/game');
+      await this._gameRef.valueChanges().subscribe(game => {
+        if (game) {
           this._game = new TicTacToeGame(this.room);
-          Object.assign(this._game, snapshot.val());
+          Object.assign(this._game, game);
           if (this._game.winner) {
             this.hideNewGame = '';
             this._text = this._game.winner;
@@ -149,15 +147,14 @@ export class TicTacToeService {
           this.playerText = 'You are player X';
           this._text = 'Wait for players';
         }
-        console.log('GAME CHANGE FINISH');
       });
     }
   }
 
-  newGame(): void {
+  async newGame(): Promise<void> {
     if (this._game && this._game.winner) {
       this._game.resetGame();
-      this._roomRef.child('game').set(this._game);
+      await this._gameRef.set(this._game);
     }
   }
 }

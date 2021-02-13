@@ -13,7 +13,10 @@ import { TicTacToeComponent } from './components/games/tic-tac-toe/tic-tac-toe.c
 import {firebaseConfig} from '../../firebaseConfig';
 import {ReactiveFormsModule} from '@angular/forms';
 import {Globals} from './globals';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireDatabaseModule } from '@angular/fire/database';
 
 firebase.initializeApp(firebaseConfig.config);
 firebase.auth().signInAnonymously();
@@ -38,7 +41,9 @@ firebase.auth().onAuthStateChanged((user) => {
     AppRoutingModule,
     FontAwesomeModule,
     NgbModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    AngularFireModule.initializeApp(firebaseConfig.config),
+    AngularFireDatabaseModule
   ],
   providers: [],
   bootstrap: [AppComponent]
