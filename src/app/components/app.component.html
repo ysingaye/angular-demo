@@ -1,4 +1,4 @@
-<div id="mainContainer" class="{{ globals.darkClass }}">
+<div id="mainContainer" [ngClass]="globals.isDark ? 'dark' : ''">
   <div id="leftMenu">
     <a routerLink="/"><h1 id="site-title">{{ title }}</h1></a>
     <app-menu id="leftMenuMenu" class="menu {{menuVisibleClass}}"></app-menu>

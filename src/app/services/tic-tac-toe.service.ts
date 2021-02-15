@@ -10,12 +10,12 @@ export class TicTacToeService {
   public playerText = '';
   public serverOnOff = 'on';
   public hideNewGame = 'd-none';
+  public allRooms = null;
 
   private _room = '';
   private _board = {};
   private _game: TicTacToeGame;
   private _text = '';
-  private _ticTacToeRef: AngularFireObject<any>;
   private _roomRef: AngularFireObject<any> = null;
   private _gameRef: AngularFireObject<any> = null;
 
@@ -31,21 +31,21 @@ export class TicTacToeService {
 
   constructor(private db: AngularFireDatabase) {
     this._board = TicTacToeGame.getDefaultBoard();
-    this._ticTacToeRef = this.db.object('tic-tac-toe');
-    const sub = this._ticTacToeRef.valueChanges().subscribe(rooms => {
+    const ticTacToeRoomsRef = this.db.object('tic-tac-toe/rooms');
+    ticTacToeRoomsRef.valueChanges().subscribe(rooms => {
       if (rooms) {
+        this.allRooms = rooms;
         for (const [room, values] of Object.entries(rooms)) {
           // @ts-ignore
           const players = values.players;
           if (players[Globals.uid] === Globals.uid) {
             this._room = room;
-            this._roomRef = this.db.object('tic-tac-toe/' + room);
+            this._roomRef = this.db.object('tic-tac-toe/rooms/' + room);
             this.addGameListener().then(() => { });
             break;
           }
         }
       }
-      sub.unsubscribe();
     }, (error) => {
       if (error) {
         this.serverOnOff = 'off';
@@ -77,16 +77,15 @@ export class TicTacToeService {
     }
     if (roomName !== this._room) {
       if (this._roomRef) {
-        await this.db.object('tic-tac-toe/' + this._room + '/players/' + Globals.uid).remove();
+        await this.db.object('tic-tac-toe/rooms/' + this._room + '/players/' + Globals.uid).remove();
         await this._gameRef.set(null);
       }
       this._room = roomName;
       this._roomRef = null;
       this._game = null;
       if (roomName) {
-        this._roomRef = this.db.object('tic-tac-toe/' + roomName);
-
-        const sub = await this.db.object('tic-tac-toe/' + this._room + '/players').valueChanges().subscribe(async (objPlayers) => {
+        this._roomRef = this.db.object('tic-tac-toe/rooms/' + roomName);
+        const sub = await this.db.object('tic-tac-toe/rooms/' + this._room + '/players').valueChanges().subscribe(async (objPlayers) => {
           let players = [];
 
           if (objPlayers) {
@@ -98,7 +97,7 @@ export class TicTacToeService {
             if (nbrPlayer < 2) {
               const datas = {};
               datas[Globals.uid] = Globals.uid;
-              await this.db.object('tic-tac-toe/' + this._room + '/players').update(datas);
+              await this.db.object('tic-tac-toe/rooms/' + this._room + '/players').update(datas);
               players.push(Globals.uid);
               nbrPlayer++;
               if (nbrPlayer === 1) {
@@ -109,7 +108,7 @@ export class TicTacToeService {
                 const game = new TicTacToeGame(roomName);
                 game.players = players;
                 game.playerTurn = 'X';
-                this._gameRef = this.db.object('tic-tac-toe/' + this.room + '/game');
+                this._gameRef = this.db.object('tic-tac-toe/games/' + this.room);
                 await this._gameRef.set(game);
               }
               await this.addGameListener();
@@ -126,7 +125,7 @@ export class TicTacToeService {
 
   private async addGameListener(): Promise<void> {
     if (this._roomRef) {
-      this._gameRef = this.db.object('tic-tac-toe/' + this.room + '/game');
+      this._gameRef = this.db.object('tic-tac-toe/games/' + this.room);
       await this._gameRef.valueChanges().subscribe(game => {
         if (game) {
           this._game = new TicTacToeGame(this.room);

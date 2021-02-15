@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {Globals} from 'src/app/globals';
 import {TicTacToeService} from 'src/app/services/tic-tac-toe.service';
 import {FormBuilder} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+
 
 @Component({
   selector: 'app-tic-tac-toe',
@@ -10,6 +12,8 @@ import {FormBuilder} from '@angular/forms';
 })
 export class TicTacToeComponent implements OnInit {
   globals = Globals;
+  room: string;
+  hideFullRoom: boolean;
 
   createRoom = this.formBuilder.group({
     name: ''
@@ -22,9 +26,18 @@ export class TicTacToeComponent implements OnInit {
   constructor(
     private _ticTacToeService: TicTacToeService,
     private formBuilder: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
+    this.route.fragment.subscribe(fragment => {
+      this.room = fragment;
+      setTimeout(() => {
+        this.ticTacToeService.joinRoom(this.room).then(player => {
+        });
+      }, 500);
+    });
   }
 
   getBoard(line = null): {} {
@@ -40,12 +53,11 @@ export class TicTacToeComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (!this.createRoom.value) {
+    if (!this.createRoom.value.name) {
       alert('You must enter a room name');
     }
     else {
-      this.ticTacToeService.joinRoom(this.createRoom.value.name);
-      this.createRoom.reset();
+      this.router.navigate(['/games/tic-tac-toe'], { fragment: this.createRoom.value.name });
     }
   }
 }

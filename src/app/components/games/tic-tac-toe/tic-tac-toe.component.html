@@ -1,29 +1,48 @@
-<div class="{{globals.darkClass}}">
+<div [ngClass]="globals.isDark ? 'dark' : ''">
   <h1>Tic Tac Toe</h1>
-  <form [formGroup]="createRoom" (ngSubmit)="onSubmit()">
-    <div class="row">
-      <div class="form-group col-3">
-        <label for="name">Room name</label>&nbsp;
-        <input id="name" type="text" formControlName="name" class="form-control">
+  <div *ngIf="room">
+    Room: {{ room }} (<a routerLink="/games/tic-tac-toe">Back to list</a>)<br/>
+    {{ ticTacToeService.playerText }}<br/>
+    {{ ticTacToeService.text }} <button type="button" class="btn btn-primary {{ ticTacToeService.hideNewGame }}" (click)="ticTacToeService.newGame()">New Game</button>
+    <table id="ticTacToeBoard">
+      <tr>
+        <td *ngFor="let cell of getBoard(0) | keyvalue" (click)="ticTacToeService.sendMove(cell.key)">{{ cell.value }}</td>
+      </tr>
+      <tr>
+        <td *ngFor="let cell of getBoard(1) | keyvalue" (click)="ticTacToeService.sendMove(cell.key)">{{ cell.value }}</td>
+      </tr>
+      <tr>
+        <td *ngFor="let cell of getBoard(2) | keyvalue" (click)="ticTacToeService.sendMove(cell.key)">{{ cell.value }}</td>
+      </tr>
+    </table>
+  </div>
+  <div *ngIf="!room">
+    <form [formGroup]="createRoom" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="form-group col-3">
+          <label for="name">Room name</label>&nbsp;
+          <input id="name" type="text" formControlName="name" class="form-control">
+        </div>
+        <div class="form-group col-3">
+          <button class="btn btn-primary" type="submit" style="margin-top: 32px">Send</button>
+        </div>
       </div>
-      <div class="form-group col-3">
-        <button class="btn btn-primary" type="submit" style="margin-top: 32px">Send</button>
-      </div>
-    </div>
-  </form>
-  Room: {{ ticTacToeService.room }}<br/>
-  {{ ticTacToeService.playerText }}<br/>
-  {{ ticTacToeService.text }} <button type="button" class="btn btn-primary {{ ticTacToeService.hideNewGame }}" (click)="ticTacToeService.newGame()">New Game</button>
-  <table id="ticTacToeBoard">
-    <tr>
-      <td *ngFor="let cell of getBoard(0) | keyvalue" (click)="ticTacToeService.sendMove(cell.key)">{{ cell.value }}</td>
-    </tr>
-    <tr>
-      <td *ngFor="let cell of getBoard(1) | keyvalue" (click)="ticTacToeService.sendMove(cell.key)">{{ cell.value }}</td>
-    </tr>
-    <tr>
-      <td *ngFor="let cell of getBoard(2) | keyvalue" (click)="ticTacToeService.sendMove(cell.key)">{{ cell.value }}</td>
-    </tr>
-  </table>
+    </form>
+    <input id="chxHideFullRoom" type="checkbox" (change)="hideFullRoom = !hideFullRoom" />&nbsp;<label for="chxHideFullRoom">hide full room</label>
+    <table *ngIf="ticTacToeService.allRooms" class="table" id="ticTacToeRoomsList">
+      <tr>
+        <th>Room</th>
+        <th>Players</th>
+        <th></th>
+      </tr>
+      <ng-container *ngFor="let room of ticTacToeService.allRooms | keyvalue">
+        <tr *ngIf="!hideFullRoom || globals.countObj(room.value['players']) < 2">
+          <td>{{ room.key }}</td>
+          <td>{{ globals.countObj(room.value['players']) }} / 2</td>
+          <td><a routerLink="/games/tic-tac-toe" fragment="{{room.key}}" class="btn btn-primary" [ngClass]="globals.countObj(room.value['players']) >= 2 ? 'disabled' : ''" type="submit">Join</a></td>
+        </tr>
+      </ng-container>
+    </table>
+  </div>
   <div id="serverOnOff" class="{{ ticTacToeService.serverOnOff }}">Server {{ ticTacToeService.serverOnOff }}</div>
 </div>

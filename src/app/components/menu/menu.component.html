@@ -1,4 +1,4 @@
-<ul class="menuDefault {{globals.darkClass}}">
+<ul class="menuDefault" [ngClass]="globals.isDark ? 'dark' : ''">
   <li><a routerLink="/" class="menuLink"><fa-icon class="menuIcon" [icon]="faHome"></fa-icon> Home</a></li>
   <li><a routerLink="/games" class="menuLink"><fa-icon class="menuIcon" [icon]="faGamepad"></fa-icon> Games</a></li>
 </ul>

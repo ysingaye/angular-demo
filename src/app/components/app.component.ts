@@ -18,12 +18,7 @@ export class AppComponent {
   constructor() { }
 
   toggleDarkMode(): void {
-    if (Globals.darkClass === 'dark') {
-      Globals.darkClass = '';
-    }
-    else {
-      Globals.darkClass = 'dark';
-    }
+    Globals.isDark = !Globals.isDark;
   }
 
   toggleMenu(): void {

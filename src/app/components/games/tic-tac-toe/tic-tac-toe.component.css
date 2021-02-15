@@ -20,3 +20,8 @@
 .dark #ticTacToeBoard td:empty:hover {
   background-color: rgba(100, 100, 255, 0.1);
 }
+
+
+.dark #ticTacToeRoomsList td, .dark #ticTacToeRoomsList th {
+  color: var(--text-color-dark);
+}
