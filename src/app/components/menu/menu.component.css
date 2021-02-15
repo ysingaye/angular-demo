@@ -1,0 +1,17 @@
+.menuDefault {
+  padding-left: 0;
+  list-style: none;
+  margin: 0;
+}
+
+.menuDefault a {
+  color: var(--text-color-header);
+  text-decoration: none;
+}
+.menuDefault.dark a {
+  color: var(--text-color-header-dark);
+}
+
+.menuDefault .menuIcon {
+  width: 20px !important;
+}

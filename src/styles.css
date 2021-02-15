@@ -1,1 +1,68 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --background-color: #ffffff;
+  --text-color: #212529;
+  --text-color-title: #1976d2;
+  --background-color-header: #1976d2;
+  --text-color-header: #ffffff;
+  --text-color-hover-header: #ffffff;
+
+  --background-color-dark: #2b2b2b;
+  --text-color-dark: #ffffff;
+  --text-color-title-dark: #c3002f;
+  --background-color-header-dark: #353535;
+  --text-color-header-dark: #ffffff;
+  --text-color-hover-header-dark: #dedede;
+
+  --green-color: #23c323;
+  --red-color: #ff0000;
+  --green-background: #dbffdb;
+  --red-background: #ff9090;
+}
+
+#mainContainer {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+#mainContainer.dark {
+  background-color: var(--background-color-dark);
+  color: var(--text-color-dark);
+}
+#mainContainer h1,
+#mainContainer h2,
+#mainContainer h3 {
+  color: var(--text-color-title);
+}
+#mainContainer.dark h1,
+#mainContainer.dark h2,
+#mainContainer.dark h3 {
+  color: var(--text-color-title-dark);
+}
+
+.darkModeToggle {
+  cursor: pointer;
+}
+#leftMenu .darkModeToggle {
+  position: absolute;
+  bottom: 15px;
+  left: 20px;
+}
+#mainContainer.dark .darkModeToggle .darkModeToggleOff {
+  display: none;
+}
+#mainContainer:not(.dark) .darkModeToggle .darkModeToggleOn {
+  display: none;
+}
+
+#mainContainer .svg-black {
+  filter: invert(20%);
+}
+#mainContainer.dark .svg-black {
+  filter: invert(80%);
+}
+
+#serverOnOff.off {
+  color: red;
+}
+#serverOnOff.on {
+  color: green;
+}
