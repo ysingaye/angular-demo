@@ -1,7 +1,7 @@
 <div id="mainContainer" [ngClass]="globals.isDark ? 'dark' : ''">
   <div id="leftMenu">
     <a routerLink="/"><h1 id="site-title">{{ title }}</h1></a>
-    <app-menu id="leftMenuMenu" class="menu {{menuVisibleClass}}"></app-menu>
+    <app-menu id="leftMenuMenu" class="menu {{ menuVisible ? 'visible' : '' }}"></app-menu>
     <div (click)="toggleMenu()" class="d-lg-none menuToggle"><fa-icon [icon]="faBars"></fa-icon></div>
     <div (click)="toggleDarkMode()" class="darkModeToggle d-none d-lg-block">Dark Mode <fa-icon class="darkModeToggleOn" [icon]="faToggleOn"></fa-icon><fa-icon class="darkModeToggleOff" [icon]="faToggleOff"></fa-icon></div>
   </div>

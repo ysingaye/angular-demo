@@ -13,7 +13,7 @@ export class AppComponent {
   faToggleOn = faToggleOn;
   faToggleOff = faToggleOff;
   faBars = faBars;
-  menuVisibleClass = '';
+  menuVisible = false;
 
   constructor() { }
 
@@ -22,11 +22,6 @@ export class AppComponent {
   }
 
   toggleMenu(): void {
-    if (this.menuVisibleClass === 'visible') {
-      this.menuVisibleClass = '';
-    }
-    else {
-      this.menuVisibleClass = 'visible';
-    }
+    this.menuVisible = !this.menuVisible;
   }
 }
